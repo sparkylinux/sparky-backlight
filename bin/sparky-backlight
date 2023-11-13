@@ -1,47 +1,22 @@
 #!/bin/bash
 
-#This script has been copied from Puppy Linux forum http://www.murga-linux.com/puppy/viewtopic.php?t=81841&sid=0a080a55e4109ab26850550a31e4eaf8
-#The author of it is stu91
-#Last modification by pavroo <pavroo@onet.eu> 2015/04/21 for SparkyLinux
+# deps: x11-xserver-utils (xrandr), gawk, grep, coreutils, yad
 
-## Application menu file ###############################################
-
-GET_MENU="$@"
-
-########################################################################
-
-function START_MENU () {
-
-## MENU items ##########################################################
-
-MENU_ITEMS="` cat "$GET_MENU" | tr '\n' '|' | sed '$s/.$//' `"
-
-## Defaults ############################################################
-
-TRAY_ICON="notification-display-brightness"
+MONITOR=`xrandr -q | grep connected | grep -v disconnected | head -n1 | awk '{print $1}'`
+# echo "Monitor = $MONITOR"
+MENU_ITEMS="Backlight UP +100%! xrandr --output $MONITOR --brightness 1.0|Backlight DOWN -20%! xrandr --output $MONITOR --brightness 0.8|Backlight DOWN -40%! xrandr --output $MONITOR --brightness 0.6|Backlight DOWN -60%! xrandr --output $MONITOR --brightness 0.4|Backlight DOWN -80%! xrandr --output $MONITOR --brightness 0.2"
+TRAY_ICON="preferences-desktop-display-color"
+# or: preferences-desktop-theme-global, preferences-desktop-virtual
 POPUP_TEXT="Backlight"
-PIPE_FIFO=$(mktemp -u /tmp/menutray2.XXXXXXXX)
+PIPE_FIFO=$(mktemp -u /tmp/menutray3.XXXXXXXX)
+mkfifo $PIPE_FIFO
+exec 3<> $PIPE_FIFO
 
-## 1 Create PIPE_FIFO file #############################################
-  mkfifo $PIPE_FIFO
-
-## 2 Attach a filedescriptor to this PIPE_FIFO #########################
-  exec 3<> $PIPE_FIFO
- 
-## 3 Run yad and tell it to read its stdin from the file descriptor ####
 GUI=$(yad --notification --kill-parent --listen \
 --image="$TRAY_ICON" \
 --text="$POPUP_TEXT" \
 --command="bash -c LEFT_CLICK" <&3 ) &
 
-## 4 Write menu to file descriptor to generate MENU ####################
- echo "menu:$MENU_ITEMS" >&3
-}
+echo "menu:$MENU_ITEMS" >&3
 
-## Check if menu file is provided ######################################
- 
-  if [ -z "$GET_MENU" ]; then
-  echo "traymenu usage: $0 /opt/tray/sparky-backlight" && exit
-  else
-  START_MENU
-  fi
+exit 0

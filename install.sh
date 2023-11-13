@@ -17,12 +17,12 @@
 if [ "$1" = "uninstall" ]; then
 	rm -f /usr/bin/sparky-backlight
 	rm -f /etc/xdg/autostart/sparky-backlight.desktop
-	rm -f /opt/tray/sparky-backlight
+	#rm -f /opt/tray/sparky-backlight
 else
 	cp bin/* /usr/bin/
 	cp etc/* /etc/xdg/autostart/
-	if [ ! -d /opt/tray ]; then
-		mkdir -p /opt/tray
-	fi
-	cp opt/* /opt/tray/
+	#if [ ! -d /opt/tray ]; then
+	#	mkdir -p /opt/tray
+	#fi
+	#cp opt/* /opt/tray/
 fi

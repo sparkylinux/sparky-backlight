@@ -1,7 +1,7 @@
 Sparky Backlight
 This tool gives quick access to desktop backlight via the panel tray icon.
 
-Copyright (C) 2015-2017 Paweł Pijanowski
+Copyright (C) 2015-2023 Paweł Pijanowski
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,7 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Dependencies:
 -------------
-xbacklight
+x11-xserver-utils
+gawk
+grep
+coreutils
 yad
 
 Install:
